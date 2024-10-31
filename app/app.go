@@ -11,7 +11,6 @@ import (
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	ethante "github.com/evmos/evmos/v19/app/ante/evm"
 	"github.com/spf13/cast"
-	poaante "github.com/xrplevm/node/v3/x/poa/ante"
 
 	"cosmossdk.io/math"
 
@@ -126,6 +125,7 @@ import (
 	"github.com/evmos/evmos/v19/x/feemarket"
 	feemarketkeeper "github.com/evmos/evmos/v19/x/feemarket/keeper"
 	feemarkettypes "github.com/evmos/evmos/v19/x/feemarket/types"
+
 	// Overriders
 	"github.com/evmos/evmos/v19/x/ibc/transfer"
 	ibctransferkeeper "github.com/evmos/evmos/v19/x/ibc/transfer/keeper"
@@ -823,11 +823,11 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, maxGasWanted uint64) {
 		TxFeeChecker:           ethante.NewDynamicFeeChecker(app.EvmKeeper),
 		StakingKeeper:          app.StakingKeeper,
 		DistributionKeeper:     app.DistrKeeper,
-		ExtraDecorator:         poaante.NewPoaDecorator(),
-		AuthzDisabledMsgTypes: []string{
-			sdk.MsgTypeURL(&stakingtypes.MsgUndelegate{}),
-			sdk.MsgTypeURL(&stakingtypes.MsgBeginRedelegate{}),
-		},
+		// ExtraDecorator:         poaante.NewPoaDecorator(),
+		// AuthzDisabledMsgTypes: []string{
+		// 	sdk.MsgTypeURL(&stakingtypes.MsgUndelegate{}),
+		// 	sdk.MsgTypeURL(&stakingtypes.MsgBeginRedelegate{}),
+		// },
 	}
 
 	if err := options.Validate(); err != nil {

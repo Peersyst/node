@@ -25,6 +25,9 @@ TMP_GENESIS=$HOMEDIR/config/tmp_genesis.json
 KEY_NAME="alice"
 MNEMONIC="birth rebuild refuse area aisle language bullet pride place clutch paddle drama"
 
+GUILLEM_KEY="guillem"
+GUILLEM_MNEMONIC="one enemy pizza veteran about pizza inmate lunch misery basket spirit weekend crush shop diesel doctor tourist goat roof illness ranch together venue portion"
+
 rm -rf $HOMEDIR
 
 make build
@@ -33,6 +36,7 @@ bin/exrpd --home "$HOMEDIR" config keyring-backend "$KEYRING"
 bin/exrpd --home "$HOMEDIR" config chain-id "$CHAINID"
 
 echo "$MNEMONIC" | bin/exrpd --home "$HOMEDIR" keys add "$KEY_NAME" --recover --keyring-backend "$KEYRING" --algo "$KEYALGO"
+echo "$GUILLEM_MNEMONIC" | bin/exrpd --home "$HOMEDIR" keys add "$GUILLEM_KEY" --recover --keyring-backend "$KEYRING" --algo "$KEYALGO"
 
 bin/exrpd --home "$HOMEDIR" init "$MONIKER" -o --chain-id "$CHAINID"
 
@@ -49,9 +53,10 @@ jq '.app_state["feemarket"]["params"]["base_fee"]="'${BASEFEE}'"' "$GENESIS" >"$
 jq '.app_state["erc20"]["token_pairs"][0]["denom"]="token"' "$GENESIS" >"$TMP_GENESIS" && mv "$TMP_GENESIS" "$GENESIS"
 
 bin/exrpd --home "$HOMEDIR" add-genesis-account "$(bin/exrpd --home "$HOMEDIR" keys show "$KEY_NAME" -a --keyring-backend "$KEYRING")" 1000000apoa,1000000000000000000000000000token --keyring-backend "$KEYRING"
+bin/exrpd --home "$HOMEDIR" add-genesis-account "$(bin/exrpd --home "$HOMEDIR" keys show "$GUILLEM_KEY" -a --keyring-backend "$KEYRING")" 1000000apoa,1000000000000000000000000000token --keyring-backend "$KEYRING"
 
 bin/exrpd --home "$HOMEDIR" gentx alice 1000000apoa --gas-prices ${BASEFEE}token --keyring-backend "$KEYRING" --chain-id "$CHAINID"
-
+bin/exrpd --home "$HOMEDIR" gentx guillem 1000000apoa --gas-prices ${BASEFEE}token --keyring-backend "$KEYRING" --chain-id "$CHAINID"
 bin/exrpd --home "$HOMEDIR" collect-gentxs
 
 bin/exrpd --home "$HOMEDIR" validate-genesis
